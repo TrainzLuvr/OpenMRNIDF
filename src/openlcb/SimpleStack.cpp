@@ -89,9 +89,12 @@ std::unique_ptr<SimpleStackBase::PhysicalIf> SimpleTcpStackBase::create_if(
     return std::unique_ptr<PhysicalIf>(new TcpPhysicalIf(node_id, service()));
 }
 
-SimpleCanStack::SimpleCanStack(const openlcb::NodeID node_id)
+SimpleCanStack::SimpleCanStack(const openlcb::NodeID node_id,
+    bool firmware_upgrade)
     : SimpleCanStackBase(node_id)
     , node_(iface(), node_id, false)
+    , pipHandler_(
+        &node_, firmware_upgrade ? PIP_RESPONSE_UPGRADE : PIP_RESPONSE)
 {
 }
 

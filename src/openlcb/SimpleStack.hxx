@@ -605,7 +605,7 @@ private:
 class SimpleCanStack : public SimpleCanStackBase
 {
 public:
-    SimpleCanStack(const openlcb::NodeID node_id);
+    SimpleCanStack(const openlcb::NodeID node_id, bool firmware_upgrade = false);
 
     /// @returns the virtual node pointer of the main virtual node of the stack
     /// (as defined by the NodeID argument of the constructor).
@@ -619,6 +619,9 @@ private:
         Defs::MEMORY_CONFIGURATION | Defs::ABBREVIATED_DEFAULT_CDI |
         Defs::SIMPLE_NODE_INFORMATION | Defs::CDI;
 
+    static const auto PIP_RESPONSE_UPGRADE = PIP_RESPONSE |
+        Defs::FIRMWARE_UPGRADE;
+
     void start_node() override
     {
         default_start_node();
@@ -627,7 +630,7 @@ private:
     /// The actual node.
     DefaultNode node_;
     /// Handles PIP requests.
-    ProtocolIdentificationHandler pipHandler_ {&node_, PIP_RESPONSE};
+    ProtocolIdentificationHandler pipHandler_;
     /// Handles SNIP requests.
     SNIPHandler snipHandler_ {iface(), &node_, &infoFlow_};
 };
