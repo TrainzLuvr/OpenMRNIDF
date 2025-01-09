@@ -522,8 +522,8 @@ struct GcHubPort : public Executable
     }
 };
 
-void create_gc_port_for_can_hub(
+Notifiable *create_gc_port_for_can_hub(
     CanHubFlow *can_hub, int fd, Notifiable *on_exit, bool use_select)
 {
-    new GcHubPort(can_hub, fd, on_exit, use_select);
+    return new GcHubPort(can_hub, fd, on_exit, use_select);
 }
