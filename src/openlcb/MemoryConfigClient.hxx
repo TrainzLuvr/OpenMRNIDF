@@ -391,8 +391,11 @@ private:
         if (responseCode_ & DatagramClient::OPERATION_PENDING)
         {
             isWaitingForTimer_ = 1;
+            // Extract the timeout.
+            long long timeout = DatagramDefs::timeout_from_flags_nsec(
+                dgClient_->result() >> DatagramClient::RESPONSE_FLAGS_SHIFT);
             return sleep_and_call(
-                &timer_, SEC_TO_NSEC(3), STATE(read_response_timeout));
+                &timer_, timeout, STATE(read_response_timeout));
         }
         else
         {
@@ -529,8 +532,11 @@ private:
         if (responseCode_ & DatagramClient::OPERATION_PENDING)
         {
             isWaitingForTimer_ = 1;
+            // Extract the timeout.
+            long long timeout = DatagramDefs::timeout_from_flags_nsec(
+                dgClient_->result() >> DatagramClient::RESPONSE_FLAGS_SHIFT);
             return sleep_and_call(
-                &timer_, SEC_TO_NSEC(3), STATE(write_response_timeout));
+                &timer_, timeout, STATE(write_response_timeout));
         }
         else
         {
