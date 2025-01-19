@@ -56,7 +56,9 @@
 #include <esp_clk_tree.h>
 #endif
 #include <esp_private/periph_ctrl.h>
-#include <esp_ipc.h>
+#ifndef CONFIG_FREERTOS_UNICORE
+#include "esp_ipc.h"
+#endif
 #include <esp_log.h>
 #include <esp_rom_gpio.h>
 #include <esp_intr_alloc.h>
@@ -1063,12 +1065,12 @@ void Esp32HardwareTwai::hw_init()
     twai_hal_configure(&twai.context, &timingCfg, &filterCfg,
         TWAI_DEFAULT_INTERRUPTS, 0);
 
-#if SOC_CPU_CORES_NUM > 1
+#ifndef CONFIG_FREERTOS_UNICORE
     ESP_ERROR_CHECK(
         esp_ipc_call_blocking(preferredIsrCore_, esp32_twai_isr_init, nullptr));
 #else
     esp32_twai_isr_init(nullptr);
-#endif // SOC_CPU_CORES_NUM > 1
+#endif // CONFIG_FREERTOS_UNICORE
     twai.active = true;
 
     os_thread_create(&twai.wd_thread, "TWAI-WD", WATCHDOG_TASK_PRIORITY,
